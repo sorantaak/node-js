@@ -1,0 +1,18 @@
+{
+  "name": "first_package",
+  "version": "1.0.0",
+  "description": "Thi is our first package",
+  "keywords": [
+    "calculation"
+  ],
+  "license": "ISC",
+  "author": "Soran.taak@gmail.com",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "cowsay": "^1.6.0"
+  }
+}
