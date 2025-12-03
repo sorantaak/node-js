@@ -1,7 +1,6 @@
 import readline from "readline/promises";
 import { stdin as input, stdout as output } from "process";
 import fs from "fs/promises";
-import { json } from "stream/consumers";
 
 const CONTACT_LIST_FILE_PATH = "./data/contacts-list.json";
 
@@ -41,6 +40,14 @@ async function addNewContact() {
   contactList.push(newContact);
   saveContacts();
 }
+
+async function deleteContact() {
+  const contactId = await rl.question("ID: ");
+  const contactIndex = contactList.findIndex(
+    ({ id }) => id === Number(contactId)
+  );
+}
+
 function showContactList() {
   const foramttedContactList = contactList
     .map(({ id, firstName, lastName }) => `#${id} ${firstName} ${lastName}`)
