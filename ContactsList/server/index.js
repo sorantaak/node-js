@@ -1,10 +1,11 @@
 import express from "express";
-import { loadContacts } from "../services.js";
 import routes from "./routes.js";
+import bodyParser from "body-parser";
 
 const app = express();
 
 app.disable("etag");
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(loggerMidleware);
 app.use("/contacts", routes);
 

@@ -1,5 +1,10 @@
 import express from "express";
-import { formatContactList, loadContacts } from "../services.js";
+import {
+  formatContactList,
+  generateNewContactId,
+  loadContacts,
+  saveContacts,
+} from "../services.js";
 
 const contactList = [];
 const router = express.Router();
@@ -13,6 +18,67 @@ router.get("/list", (req, res) => {
   }
   res.json(contactList);
 });
+
+router.post("/new", (req, res) => {
+  const { firstName, lastName } = req.body;
+
+  const id = generateNewContactId(contactList);
+
+  const newContact = {
+    id,
+    firstName,
+    lastName,
+  };
+  contactList.push(newContact);
+  saveContacts(contactList);
+  res.send(`The contact #${id} ${firstName} - ${lastName} has been creaated`);
+});
+
+router.delete("/:id", (req, res) => {
+  if (contactList.length < 1) {
+    res.status(400).send({ message: "his is no contact on the list" });
+    return;
+  }
+
+  const contactIndex = contactList.findIndex(
+    ({ id }) => id === Number(req.params.id)
+  );
+
+  if (contactIndex < 0) {
+    res.status(400).send({ message: "invalid id" });
+    return;
+  }
+  contactList.splice(contactIndex, 1);
+  saveContacts(contactList);
+  res.send(`Contact #${req.params.id} has been deleted`);
+});
+
+router.put("/:id", (req, res) => {
+  if (contactList.length < 1) {
+    res.status(400).send({ message: "his is no contact on the list" });
+    return;
+  }
+
+  const contactIndex = contactList.findIndex(
+    ({ id }) => id === Number(req.params.id)
+  );
+
+  if (contactIndex < 0) {
+    res.status(400).send({ message: "invalid id" });
+    return;
+  }
+  const { firstName, lastName } = req.body;
+  const contact = contactList[contactIndex];
+  const updatedContact = {
+    ...contact,
+    firstName: firstName || contact.firstName,
+    lastName: lastName || contact.lastName,
+  };
+  contactList.splice(contactIndex, 1, updatedContact);
+  saveContacts(contactList);
+  res.send(`Contact #${req.params.id} has been modified`);
+});
+
 const loadedContacts = await loadContacts();
 contactList.push(...loadedContacts);
 
