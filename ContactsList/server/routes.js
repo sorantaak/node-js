@@ -5,18 +5,22 @@ import {
   loadContacts,
   saveContacts,
 } from "../services.js";
-
+import { query } from "../db.js";
+// console.log(pool);
 const contactList = [];
+
 const router = express.Router();
 
-router.get("/list", (req, res) => {
+router.get("/list", async (req, res) => {
+  const contactsListDB = await query("SELECT * FROM contacts");
+  console.log(contactsListDB);
   if (req.query.format) {
-    const responseData = `<pre>${formatContactList(contactList)}</pre>`;
+    const responseData = `<pre>${formatContactList(contactsListDB.rows)}</pre>`;
 
     res.type("html");
     res.send(responseData);
   }
-  res.json(contactList);
+  res.json(contactsListDB.rows);
 });
 
 router.post("/new", (req, res) => {
